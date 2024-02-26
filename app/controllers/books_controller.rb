@@ -2,7 +2,9 @@
 class BooksController < ApplicationController
   def index
     # render json: { data: Book.all }
-    books = paginate(Book.all).map do |book|
+    # books = Book.order("#{params[:sort] || 'id'} #{params[:dir] || 'desc'}")
+
+    books = filter(sort(paginate(Book.all))).map do |book|
       FieldPicker.new(BookPresenter.new(book, params)).pick
     end
 
