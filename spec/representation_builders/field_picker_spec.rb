@@ -5,7 +5,7 @@ RSpec.describe 'FieldPicker' do
   # one below. This allows us to override any of them easily in a
   # specific context.
   let(:rails_tutorial) { create(:ruby_on_rails_tutorial) }
-  let(:params) { { fields: 'id,title,subtitle' } }
+  let(:params) { { fields: 'id,title' } }
   let(:presenter) { BookPresenter.new(rails_tutorial, params) }
   let(:field_picker) { FieldPicker.new(presenter) }
 
@@ -23,7 +23,7 @@ RSpec.describe 'FieldPicker' do
   # as 'FieldPicker.new(presenter).pick and should return the same presenter'
   # with updated data
   describe '#pick' do
-    context 'with the "fields" parameter containing "id,title,subtitle"' do
+    context 'with the "fields" parameter containing "id,title,"' do
       it 'updates the presenter "data" with the book "id" and "title"' do
         expect(field_picker.pick.data).to eq({
           'id'    => rails_tutorial.id,
@@ -62,6 +62,15 @@ RSpec.describe 'FieldPicker' do
           'title' => 'Ruby on Rails Tutorial',
           'author_id' => rails_tutorial.author.id
         })
+      end
+    end
+
+    context 'with invalid attributes "fid"' do
+      let(:params) { { fields: 'fid,title' } }
+  
+      it 'raises a "RepresentationBuilderError"' do
+        expect { field_picker.pick }.to(
+          raise_error(RepresentationBuilderError))
       end
     end
   end
